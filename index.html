@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30 Day Map Challenge 2026 · Chris Kucewicz</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root, [data-theme="paper"] {
+    --ink: #0f0e0c; --paper: #f5f2eb; --accent: #c94a2a; --muted: #9a9589;
+    --card-bg: #ffffff; --border: #e0dbd0; --hover: #fffdf8;
+    --s1: #7c6fc4; --s2: #4fa37a; --s3: #c97a2a; --s4: #2a7bc9; --s5: #c94a6e;
+    --sidebar-w: 270px;
+  }
+  [data-theme="ocean"] {
+    --ink: #0b1f2a; --paper: #eaf1f3; --accent: #0f7b8a; --muted: #7a909a;
+    --card-bg: #f9fcfc; --border: #cddde2; --hover: #ffffff;
+    --s1: #0f7b8a; --s2: #3d9a6b; --s3: #d08a2e; --s4: #4a66c2; --s5: #c4546b;
+  }
+  [data-theme="night"] {
+    --ink: #e8edf0; --paper: #0e1318; --accent: #f0a63a; --muted: #7f8d97;
+    --card-bg: #151c22; --border: #26313a; --hover: #1b242c;
+    --s1: #9a8df0; --s2: #5cc79a; --s3: #f0a63a; --s4: #5aa6f0; --s5: #f06f94;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    grid-template-rows: 100vh;
+    overflow: hidden;
+  }
+
+  /* Sidebar */
+  aside {
+    background: var(--card-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .brand {
+    padding: 1.5rem 1.25rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.7rem;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .brand-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    margin-top: 0.6rem;
+    line-height: 1.7;
+  }
+
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.9rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .progress strong {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--accent);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .progress-bar { flex: 1; height: 2px; background: var(--border); }
+  .progress-bar > div { height: 100%; background: var(--accent); width: 0; }
+
+  nav {
+    overflow-y: auto;
+    flex: 1;
+    padding-bottom: 1.5rem;
+  }
+
+  .group-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 1.1rem 1.25rem 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+  }
+
+  .group-pip { width: 7px; height: 7px; border-radius: 50%; }
+
+  .day-btn {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.55rem 1.25rem;
+    border: none;
+    background: transparent;
+    border-left: 3px solid transparent;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--ink);
+    transition: background 0.12s;
+  }
+
+  .day-btn .n {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--accent);
+    width: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .day-btn .label { flex: 1; line-height: 1.25; }
+
+  .day-btn .sub {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .day-btn.done:hover { background: var(--hover); }
+
+  .day-btn.active {
+    background: var(--paper);
+    border-left-color: var(--day-color, var(--accent));
+    font-weight: 500;
+  }
+
+  .day-btn.upcoming {
+    cursor: default;
+    color: var(--muted);
+  }
+
+  .day-btn.upcoming .n { color: var(--muted); }
+
+  /* Main */
+  main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.5rem;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topbar-title { display: flex; align-items: baseline; gap: 0.75rem; min-width: 0; }
+
+  .topbar-day {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .topbar-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .topbar a:hover { text-decoration: underline; }
+
+  .stage { flex: 1; position: relative; min-height: 0; }
+
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: var(--paper);
+  }
+
+  .empty {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .stage.is-empty .empty { display: flex; }
+  .stage.is-empty iframe { display: none; }
+
+  .foot {
+    padding: 0.5rem 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--card-bg);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .foot a { color: var(--accent); text-decoration: none; }
+  .foot a:hover { text-decoration: underline; }
+
+  .themes {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0.7rem 1.25rem;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  .theme-dot {
+    width: 16px; height: 16px; border-radius: 50%; cursor: pointer;
+    border: 2px solid var(--card-bg); box-shadow: 0 0 0 1px var(--border);
+  }
+  .theme-dot.on { box-shadow: 0 0 0 2px var(--accent); }
+
+  .menu-btn { display: none; }
+  .scrim { display: none; }
+
+  /* Mobile: sidebar becomes a slide-out drawer */
+  @media (max-width: 800px) {
+    body {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    aside {
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      width: min(82vw, 320px);
+      z-index: 30;
+      transform: translateX(-100%);
+      transition: transform 0.22s ease;
+      box-shadow: none;
+    }
+
+    body.menu-open aside {
+      transform: translateX(0);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+    }
+
+    .scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,14,12,0.35);
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s;
+      display: block;
+    }
+
+    body.menu-open .scrim { opacity: 1; pointer-events: auto; }
+
+    .menu-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      border-radius: 4px;
+      padding: 0.4rem 0.6rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .topbar { padding: 0.6rem 1rem; gap: 0.6rem; }
+    .topbar-title { flex: 1; }
+    .topbar-sub { display: none; }
+    .day-btn { padding: 0.7rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scrim" id="scrim"></div>
+
+<aside>
+  <div class="brand">
+    <div>
+      <p class="eyebrow">#30DayMapChallenge · November 2026</p>
+      <h1>30 Days<br>of <em>Maps</em></h1>
+      <p class="brand-meta">Chris Kucewicz · ckucewicz</p>
+    </div>
+    <div class="progress">
+      <strong id="done-count">0</strong>
+      <span>of 30</span>
+      <div class="progress-bar"><div id="progress-fill"></div></div>
+    </div>
+  </div>
+  <nav id="nav"></nav>
+  <div class="themes">Theme
+    <span class="theme-dot" data-t="paper" style="background:#f5f2eb" title="Paper"></span>
+    <span class="theme-dot" data-t="ocean" style="background:#0f7b8a" title="Ocean"></span>
+    <span class="theme-dot" data-t="night" style="background:#0e1318" title="Night"></span>
+  </div>
+</aside>
+
+<main>
+  <div class="topbar">
+    <button class="menu-btn" id="menu-btn" aria-label="Open day list">☰ Days</button>
+    <div class="topbar-title">
+      <span class="topbar-day" id="top-day"></span>
+      <span class="topbar-name" id="top-name">Loading</span>
+      <span class="topbar-sub" id="top-sub"></span>
+    </div>
+    <a id="top-open" href="#" target="_blank" rel="noopener" style="display:none">Open full page ↗</a>
+  </div>
+
+  <div class="stage" id="stage">
+    <iframe id="frame" title="Map" loading="lazy"></iframe>
+    <div class="empty" id="empty">No maps published yet.<br>Check back on November 1.</div>
+  </div>
+
+  <div class="foot">
+    <span>Built for <a href="https://30daymapchallenge.com" target="_blank" rel="noopener">#30DayMapChallenge 2026</a></span>
+    <span><a href="https://github.com/ckucewicz/Map_challenge_2026" target="_blank" rel="noopener">Source on GitHub</a></span>
+  </div>
+</main>
+
+<script>
+// The official challenge has no categories, so these are six-day blocks.
+const SECTIONS = [
+  { title: 'Foundations', slug: 'p1', color: 'var(--s1)' },
+  { title: 'Ideas',       slug: 'p2', color: 'var(--s2)' },
+  { title: 'Experiments', slug: 'p3', color: 'var(--s3)' },
+  { title: 'Techniques',  slug: 'p4', color: 'var(--s4)' },
+  { title: 'Finale',      slug: 'p5', color: 'var(--s5)' },
+];
+
+const DAYS = [
+  { day:1,  prompt:'Points',            cat:'p1' },
+  { day:2,  prompt:'Lines',             cat:'p1' },
+  { day:3,  prompt:'Polygons',          cat:'p1' },
+  { day:4,  prompt:'Clusters',          cat:'p1' },
+  { day:5,  prompt:'Senses: Sight',     cat:'p1' },
+  { day:6,  prompt:'Vintage',           cat:'p1' },
+  { day:7,  prompt:'10 minute map',     cat:'p2' },
+  { day:8,  prompt:'Utopia',            cat:'p2' },
+  { day:9,  prompt:'Urban-rural',       cat:'p2' },
+  { day:10, prompt:'Prompting only',    cat:'p2' },
+  { day:11, prompt:'Senses: Sound',     cat:'p2' },
+  { day:12, prompt:'Power',             cat:'p2' },
+  { day:13, prompt:'Interactions',      cat:'p3' },
+  { day:14, prompt:'Borgesian map',     cat:'p3' },
+  { day:15, prompt:'Inside out',        cat:'p3' },
+  { day:16, prompt:'Collaborative map', cat:'p3' },
+  { day:17, prompt:'Light & dark',      cat:'p3' },
+  { day:18, prompt:'NULL',              cat:'p3' },
+  { day:19, prompt:'Senses: Smell',     cat:'p4' },
+  { day:20, prompt:'Hexagons',          cat:'p4' },
+  { day:21, prompt:'OpenStreetMap',     cat:'p4' },
+  { day:22, prompt:'Projections',       cat:'p4' },
+  { day:23, prompt:'Senses: Taste',     cat:'p4' },
+  { day:24, prompt:'Network',           cat:'p4' },
+  { day:25, prompt:'Is this a map?',    cat:'p5' },
+  { day:26, prompt:'Water',             cat:'p5' },
+  { day:27, prompt:'New tool',          cat:'p5' },
+  { day:28, prompt:'Senses: Feeling',   cat:'p5' },
+  { day:29, prompt:'Raster',            cat:'p5' },
+  { day:30, prompt:'Pen & paper',       cat:'p5' },
+];
+
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelectorAll('.theme-dot').forEach(d => d.classList.toggle('on', d.dataset.t === t));
+  try { localStorage.setItem('mapchallenge-theme', t); } catch (e) {}
+}
+document.querySelectorAll('.theme-dot').forEach(d => d.addEventListener('click', () => setTheme(d.dataset.t)));
+let savedTheme = 'paper';
+try { savedTheme = localStorage.getItem('mapchallenge-theme') || 'paper'; } catch (e) {}
+setTheme(['paper','ocean','night'].includes(savedTheme) ? savedTheme : 'paper');
+
+const navEl   = document.getElementById('nav');
+const frameEl = document.getElementById('frame');
+const stageEl = document.getElementById('stage');
+const pad = n => String(n).padStart(2, '0');
+const keyOf = d => 'day' + pad(d.day);
+
+const closeMenu = () => document.body.classList.remove('menu-open');
+document.getElementById('menu-btn').addEventListener('click', () => document.body.classList.toggle('menu-open'));
+document.getElementById('scrim').addEventListener('click', closeMenu);
+
+const state = { done: new Set(), titles: {}, current: null };
+
+// Build the nav (everything starts as upcoming)
+const buttons = {};
+SECTIONS.forEach(sec => {
+  const label = document.createElement('div');
+  label.className = 'group-label';
+  label.innerHTML = '<span class="group-pip" style="background:' + sec.color + '"></span>' + sec.title;
+  navEl.appendChild(label);
+
+  DAYS.filter(d => d.cat === sec.slug).forEach(d => {
+    const b = document.createElement('button');
+    b.className = 'day-btn upcoming';
+    b.style.setProperty('--day-color', sec.color);
+    b.innerHTML =
+      '<span class="n">' + pad(d.day) + '</span>' +
+      '<span class="label">' + d.prompt + '<span class="sub"></span></span>';
+    b.addEventListener('click', () => { if (state.done.has(d.day)) { select(d.day); closeMenu(); } });
+    navEl.appendChild(b);
+    buttons[d.day] = b;
+  });
+});
+
+function select(dayNum, updateHash = true) {
+  const d = DAYS.find(x => x.day === dayNum);
+  if (!d) return;
+  state.current = dayNum;
+
+  Object.entries(buttons).forEach(([n, b]) => b.classList.toggle('active', +n === dayNum));
+  buttons[dayNum].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+
+  const src = keyOf(d) + '/index.html';
+  frameEl.src = src;
+  stageEl.classList.remove('is-empty');
+
+  document.getElementById('top-day').textContent = 'Day ' + pad(d.day);
+  document.getElementById('top-name').textContent = d.prompt;
+  document.getElementById('top-sub').textContent = state.titles[dayNum] || '';
+  const open = document.getElementById('top-open');
+  open.href = src;
+  open.style.display = '';
+
+  if (updateHash) history.replaceState(null, '', '#' + keyOf(d));
+}
+
+function markDone(dayNum, title) {
+  state.done.add(dayNum);
+  state.titles[dayNum] = title;
+  const b = buttons[dayNum];
+  b.classList.remove('upcoming');
+  b.classList.add('done');
+  b.querySelector('.sub').textContent = title;
+  document.getElementById('done-count').textContent = state.done.size;
+  document.getElementById('progress-fill').style.width = (state.done.size / 30 * 100).toFixed(1) + '%';
+}
+
+// Probe every day folder in parallel, then pick the starting day.
+Promise.all(DAYS.map(d =>
+  fetch(keyOf(d) + '/index.html')
+    .then(res => {
+      if (!res.ok) return null;
+      return res.text().then(text => {
+        const tm = text.match(/<title[^>]*>([^<]+)<\/title>/i);
+        const title = tm ? tm[1].replace(/\s*[·—–-]\s*#?30Day.*$/i, '').trim() : '';
+        markDone(d.day, title);
+      });
+    })
+    .catch(() => null)
+)).then(() => {
+  if (!state.done.size) {
+    stageEl.classList.add('is-empty');
+    document.getElementById('top-name').textContent = '30 Days of Maps';
+    return;
+  }
+  // Deep link (#day05) wins if that day exists, otherwise latest completed day.
+  const m = location.hash.match(/^#day(\d{2})$/);
+  const wanted = m ? parseInt(m[1], 10) : null;
+  const latest = Math.max(...state.done);
+  select(wanted && state.done.has(wanted) ? wanted : latest, false);
+});
+
+window.addEventListener('hashchange', () => {
+  const m = location.hash.match(/^#day(\d{2})$/);
+  const n = m ? parseInt(m[1], 10) : null;
+  if (n && state.done.has(n) && n !== state.current) select(n, false);
+});
+</script>
+</body>
+</html>
